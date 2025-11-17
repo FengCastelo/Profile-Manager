@@ -52,7 +52,7 @@ function changetheme() {
   const themeSelect = document.getElementById("themeSelect");
   const fontColorSelect = document.getElementById("fontColorSelect");
   const photoInput = document.getElementById("photoInput");
-  const signupButton = document.getElementById("signupButton");
+  const signupBtn = document.getElementById("signupBtn");
 
   body.className = "";
   container.className =
@@ -69,7 +69,7 @@ function changetheme() {
     "w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500";
   photoInput.className =
     "w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500";
-  signupButton.className =
+  signupBtn.className =
     "w-full bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 transition-colors";
 
   if (tema === "lightTheme") {
@@ -139,47 +139,46 @@ function changetheme() {
     fontColorSelect.classList.add("text-gray-500", "placeholder-gray-500");
   }
 
-  function signUpProfile() {
-  const userID = localStorage.getItem("currentUserId");
+function signUp() {
 
-  // <---- Pega os valores dos inputs ---->
+  const userId = localStorage.getItem("currentUserId");
+
+  if (!userId) {
+    alert("Erro: Nenhum usuário logado!");
+    return;
+  }
+
   const nome = document.getElementById("nameInput").value.trim();
   const idade = document.getElementById("ageInput").value.trim();
   const email = document.getElementById("emailInput").value.trim();
   const tema = document.getElementById("themeSelect").value;
-  const cor = document.getElementById("fontColorSelect").value;
-  const fotoInput = document.getElementById("photoInput");
+  const corFonte = document.getElementById("fontColorSelect").value;
+  const foto = document.getElementById("photoInput").value.trim();
 
-  // <---- Validação simples ---->
   if (!nome || !idade || !email) {
-    alert("Por favor, preencha os dados.");
+    alert("Preencha Nome, Idade e Email.");
     return;
   }
 
-  // <---- Salvar foto (caso tenha enviado) ---->
-  let fotoURL = localStorage.getItem(userID + "_foto"); // mantém a foto antiga
-
-  if (fotoInput.files && fotoInput.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      fotoURL = event.target.result;
-      salvarDados();
-    };
-    reader.readAsDataURL(fotoInput.files[0]);
-  } else {
-    salvarDados(); // se não tiver foto nova -> só salva outros dados
+  if (idade <= 0) {
+    alert("Idade inválida!");
+    return;
   }
 
-  function salvarDados() {
-    localStorage.setItem(userID + "_nome", nome);
-    localStorage.setItem(userID + "_idade", idade);
-    localStorage.setItem(userID + "_email", email);
-    localStorage.setItem(userID + "_tema", tema);
-    localStorage.setItem(userID + "_cor_fonte", cor);
-    if (fotoURL) localStorage.setItem(userID + "_foto", fotoURL);
+  localStorage.setItem(userId + "_nome", nome);
+  localStorage.setItem(userId + "_idade", idade);
+  localStorage.setItem(userId + "_email", email);
+  localStorage.setItem(userId + "_tema", tema);
+  localStorage.setItem(userId + "_cor_fonte", corFonte);
+  localStorage.setItem(userId + "_foto", foto || "Pictures/img1.png");
 
-    alert("Cadastro feito com sucesso!");
-  }
+  alert("Perfil cadastrado com sucesso!");
+  loadProfile();
 }
 
+}
+
+function logout() {
+  localStorage.removeItem("currentUserId");
+  window.location.href = "index.html";
 }
